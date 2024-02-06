@@ -112,3 +112,4 @@ dkms.conf
 
 *.dot
 test
+logs
