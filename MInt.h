@@ -19,7 +19,7 @@ static const char* GRAPHVIZ_COLORS[]  = {"red", "green", "blue",
                                          "sienna", "white", "cornflowerblue", 
                                          "chocolate4", "blueviolet", "darkgoldenrod1", 
                                          "darkblue", "darkmagenta"};
-       const int   COLOR_CNT          = sizeof(GRAPHVIZ_COLORS) / sizeof(const char*);
+static const int   COLOR_CNT          = sizeof(GRAPHVIZ_COLORS) / sizeof(const char*);
 
 FILE* DOT_FILE      = nullptr;
 int   VARIABLES_CNT = 0;
@@ -34,19 +34,19 @@ void operator oper(const MInt& val2) {                                          
 }                                                                                   \
 
 
-#define ARITHMETIC_OPER(oper)                                                                        \
-MInt operator oper(const MInt& val2) {                                                               \
-    printf("OPERATOR %s, VALUE: %d\n", #oper, value);                                                \
-    MInt ret_value = MInt(value oper val2.value);                                                    \
-                                                                                                     \
-    const char* color = getRandomColor();                                                            \
-                                                                                                     \
-    drawOperBlock(OPER_CNT++, #oper, color);                                                         \
-    drawArrow(VALUE_PREFIX, id, OPER_PREFIX, OPER_CNT - 1, "", color);                               \
-    drawArrow(VALUE_PREFIX, val2.id, OPER_PREFIX, OPER_CNT - 1, "", color);                          \
-    drawArrow(OPER_PREFIX, OPER_CNT - 1, VALUE_PREFIX, ret_value.id, "", color);                     \
-    return ret_value;                                                                                \
-}                                                                                                    \
+#define ARITHMETIC_OPER(oper)                                                    \
+MInt operator oper(const MInt& val2) {                                           \
+    printf("OPERATOR %s, VALUE: %d\n", #oper, value);                            \
+    MInt ret_value = MInt(value oper val2.value);                                \
+                                                                                 \
+    const char* color = getRandomColor();                                        \
+                                                                                 \
+    drawOperBlock(OPER_CNT++, #oper, color);                                     \
+    drawArrow(VALUE_PREFIX, id, OPER_PREFIX, OPER_CNT - 1, "", color);           \
+    drawArrow(VALUE_PREFIX, val2.id, OPER_PREFIX, OPER_CNT - 1, "", color);      \
+    drawArrow(OPER_PREFIX, OPER_CNT - 1, VALUE_PREFIX, ret_value.id, "", color); \
+    return ret_value;                                                            \
+}                                                                                \
 
 
 #define UNARY_OPER(oper)                                   \
@@ -58,12 +58,12 @@ MInt operator oper() {                                     \
 }                                                          \
 
 
-#define COMPARISON_OPER(oper)                                                   \
-bool operator oper(const MInt& val2) {                                          \
-    printf("OPERATOR %s, VALUE: %d\n", #oper, value);                           \
-    drawArrow(VALUE_PREFIX, id, VALUE_PREFIX, val2.id, #oper);                  \
-    return value oper val2.value;                                               \
-}                                                                               \
+#define COMPARISON_OPER(oper)                                  \
+bool operator oper(const MInt& val2) {                         \
+    printf("OPERATOR %s, VALUE: %d\n", #oper, value);          \
+    drawArrow(VALUE_PREFIX, id, VALUE_PREFIX, val2.id, #oper); \
+    return value oper val2.value;                              \
+}                                                              \
 
 
 #define PREFIX_OPER(oper)                                 \

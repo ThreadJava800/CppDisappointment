@@ -13,13 +13,13 @@
 <g id="node1" class="node">
 <title>value0</title>
 <path fill="red" stroke="black" d="M12,-67.5C12,-67.5 60.25,-67.5 60.25,-67.5 66.25,-67.5 72.25,-73.5 72.25,-79.5 72.25,-79.5 72.25,-91.5 72.25,-91.5 72.25,-97.5 66.25,-103.5 60.25,-103.5 60.25,-103.5 12,-103.5 12,-103.5 6,-103.5 0,-97.5 0,-91.5 0,-91.5 0,-79.5 0,-79.5 0,-73.5 6,-67.5 12,-67.5"/>
-<text text-anchor="middle" x="36.12" y="-81.2" font-family="Times,serif" font-size="14.00">value: 6</text>
+<text text-anchor="middle" x="36.12" y="-81.2" font-family="Times,serif" font-size="14.00">value: 7</text>
 </g>
 <!-- value1 -->
 <g id="node2" class="node">
 <title>value1</title>
 <path fill="red" stroke="black" d="M161.5,-67.5C161.5,-67.5 209.75,-67.5 209.75,-67.5 215.75,-67.5 221.75,-73.5 221.75,-79.5 221.75,-79.5 221.75,-91.5 221.75,-91.5 221.75,-97.5 215.75,-103.5 209.75,-103.5 209.75,-103.5 161.5,-103.5 161.5,-103.5 155.5,-103.5 149.5,-97.5 149.5,-91.5 149.5,-91.5 149.5,-79.5 149.5,-79.5 149.5,-73.5 155.5,-67.5 161.5,-67.5"/>
-<text text-anchor="middle" x="185.62" y="-81.2" font-family="Times,serif" font-size="14.00">value: 6</text>
+<text text-anchor="middle" x="185.62" y="-81.2" font-family="Times,serif" font-size="14.00">value: 7</text>
 </g>
 <!-- value0&#45;&gt;value1 -->
 <g id="edge1" class="edge">
@@ -32,7 +32,7 @@
 <g id="node4" class="node">
 <title>value3</title>
 <path fill="red" stroke="black" d="M356,-12.5C356,-12.5 404.25,-12.5 404.25,-12.5 410.25,-12.5 416.25,-18.5 416.25,-24.5 416.25,-24.5 416.25,-36.5 416.25,-36.5 416.25,-42.5 410.25,-48.5 404.25,-48.5 404.25,-48.5 356,-48.5 356,-48.5 350,-48.5 344,-42.5 344,-36.5 344,-36.5 344,-24.5 344,-24.5 344,-18.5 350,-12.5 356,-12.5"/>
-<text text-anchor="middle" x="380.12" y="-26.2" font-family="Times,serif" font-size="14.00">value: 1</text>
+<text text-anchor="middle" x="380.12" y="-26.2" font-family="Times,serif" font-size="14.00">value: 6</text>
 </g>
 <!-- value1&#45;&gt;value3 -->
 <g id="edge3" class="edge">
@@ -45,7 +45,7 @@
 <g id="node5" class="node">
 <title>value5</title>
 <path fill="red" stroke="black" d="M356,-80.5C356,-80.5 404.25,-80.5 404.25,-80.5 410.25,-80.5 416.25,-86.5 416.25,-92.5 416.25,-92.5 416.25,-104.5 416.25,-104.5 416.25,-110.5 410.25,-116.5 404.25,-116.5 404.25,-116.5 356,-116.5 356,-116.5 350,-116.5 344,-110.5 344,-104.5 344,-104.5 344,-92.5 344,-92.5 344,-86.5 350,-80.5 356,-80.5"/>
-<text text-anchor="middle" x="380.12" y="-94.2" font-family="Times,serif" font-size="14.00">value: 6</text>
+<text text-anchor="middle" x="380.12" y="-94.2" font-family="Times,serif" font-size="14.00">value: 7</text>
 </g>
 <!-- value1&#45;&gt;value5 -->
 <g id="edge4" class="edge">
@@ -58,7 +58,7 @@
 <g id="node3" class="node">
 <title>value2</title>
 <path fill="red" stroke="black" d="M161.5,-0.5C161.5,-0.5 209.75,-0.5 209.75,-0.5 215.75,-0.5 221.75,-6.5 221.75,-12.5 221.75,-12.5 221.75,-24.5 221.75,-24.5 221.75,-30.5 215.75,-36.5 209.75,-36.5 209.75,-36.5 161.5,-36.5 161.5,-36.5 155.5,-36.5 149.5,-30.5 149.5,-24.5 149.5,-24.5 149.5,-12.5 149.5,-12.5 149.5,-6.5 155.5,-0.5 161.5,-0.5"/>
-<text text-anchor="middle" x="185.62" y="-14.2" font-family="Times,serif" font-size="14.00">value: 1</text>
+<text text-anchor="middle" x="185.62" y="-14.2" font-family="Times,serif" font-size="14.00">value: 6</text>
 </g>
 <!-- value2&#45;&gt;value3 -->
 <g id="edge2" class="edge">
