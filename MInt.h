@@ -11,8 +11,6 @@ static const char* VALUE_PREFIX  = "value";
 static const char*  OPER_PREFIX  = "oper";
 static const char* DEFAULT_COLOR = "red";
 
-static const int   MAX_INFO_LEN  = 1024;
-
 static const int   MAX_NAME_LENGTH    = 128;
 static const char* GRAPHVIZ_FILE_NAME = "graph.dot";
 static const int   DEFAULT_INT_VALUE  = 0;
@@ -26,16 +24,10 @@ static const char* GRAPHVIZ_COLORS[]  = {"red", "green", "blue",
 FILE* DOT_FILE      = nullptr;
 int   VARIABLES_CNT = 0;
 int   OPER_CNT      = 0;
-char* INFO_STR      = nullptr;
-int   INFO_STR_POS  = 0;
 
 #define ASSIGNMENT_OPER(oper)                                                       \
 void operator oper(const MInt& val2) {                                              \
     value oper val2.value;                                                          \
-                                                                                    \
-    char temp_str[MAX_INFO_LEN];                                                    \
-    sprintf(temp_str, " -> (%s %d => %d)", #oper, val2.value, value);               \
-    strcat(INFO_STR, temp_str);                                                     \
                                                                                     \
     printf("OPERATOR %s, VALUE: %d\n", #oper, value);                               \
     drawArrow(VALUE_PREFIX, val2.id, VALUE_PREFIX, id, #oper);                      \
@@ -46,10 +38,6 @@ void operator oper(const MInt& val2) {                                          
 MInt operator oper(const MInt& val2) {                                                               \
     printf("OPERATOR %s, VALUE: %d\n", #oper, value);                                                \
     MInt ret_value = MInt(value oper val2.value);                                                    \
-                                                                                                     \
-    char temp_str[MAX_INFO_LEN];                                                                     \
-    sprintf(temp_str, " -> (%d %s %d = %d)", value, #oper, val2.value, ret_value.value);             \
-    strcat(INFO_STR, temp_str);                                                                      \
                                                                                                      \
     const char* color = getRandomColor();                                                            \
                                                                                                      \
@@ -65,7 +53,6 @@ MInt operator oper(const MInt& val2) {                                          
 MInt operator oper() {                                     \
     value = oper value;                                    \
     printf("OPERATOR %s, VALUE: %d\n", #oper, value);      \
-    sprintf(INFO_STR, "%s -> %d", INFO_STR, value); \
     drawArrow(VALUE_PREFIX, id, VALUE_PREFIX, id, #oper);  \
     return *this;                                          \
 }                                                          \
@@ -74,7 +61,6 @@ MInt operator oper() {                                     \
 #define COMPARISON_OPER(oper)                                                   \
 bool operator oper(const MInt& val2) {                                          \
     printf("OPERATOR %s, VALUE: %d\n", #oper, value);                           \
-    sprintf(INFO_STR, "%s -> ?: %d %s %d", INFO_STR, value, #oper, val2.value); \
     drawArrow(VALUE_PREFIX, id, VALUE_PREFIX, val2.id, #oper);                  \
     return value oper val2.value;                                               \
 }                                                                               \
@@ -84,7 +70,6 @@ bool operator oper(const MInt& val2) {                                          
 MInt operator oper() {                                    \
     oper value;                                           \
     printf("OPERATOR %s, VALUE: %d\n", #oper, value);     \
-    sprintf(INFO_STR, "%s -> %d", INFO_STR, value);       \
     drawArrow(VALUE_PREFIX, id, VALUE_PREFIX, id, #oper); \
     return *this;                                         \
 }                                                         \
@@ -96,7 +81,6 @@ MInt operator oper(int) {                                 \
     value oper;                                           \
                                                           \
     printf("OPERATOR %s, VALUE: %d\n", #oper, value);     \
-    sprintf(INFO_STR, "%s -> %d", INFO_STR, value);       \
     drawArrow(VALUE_PREFIX, id, VALUE_PREFIX, id, #oper); \
     return ret_value;                                     \
 }   
@@ -139,14 +123,12 @@ void drawOperBlock(int val_id, const char* oper, const char* color) {
 }
 
 void drawValueBlock(int val_id, int value) {
-    fprintf(stderr, "%s\n", INFO_STR);
     mprintf(
         DOT_FILE, 
-        "\t%s%ld[shape=record, style=\"rounded, filled\", fillcolor=\"red\", label=\"value: %ld | %s\"];\n", 
+        "\t%s%ld[shape=record, style=\"rounded, filled\", fillcolor=\"red\", label=\"value: %ld\"];\n", 
         VALUE_PREFIX,
         val_id, 
-        value,
-        INFO_STR
+        value
     );
 }
 
@@ -162,10 +144,6 @@ public:
         drawValueBlock(id - 1, value);
         drawValueBlock(id    , value);
         drawArrow(VALUE_PREFIX, id - 1, VALUE_PREFIX, id, "CTOR");
-
-        char temp_str[MAX_INFO_LEN];
-        sprintf(temp_str, "OBJECT CREATED FROM %d", value);
-        strcat(INFO_STR, temp_str);
 
         VARIABLES_CNT++;
     }

@@ -35,8 +35,6 @@ void initDotFile() {
 
     VARIABLES_CNT = 0;
     OPER_CNT      = 0;
-    INFO_STR      = new char[MAX_INFO_LEN];
-    INFO_STR_POS  = 0;
 }
 
 void createGraphFromDot(const char* image_name) {
@@ -46,8 +44,6 @@ void createGraphFromDot(const char* image_name) {
     char command[MAX_NAME_LENGTH] = {};
     sprintf(command, "dot -Tsvg %s > %s", GRAPHVIZ_FILE_NAME, image_name);
     system(command);
-
-    delete[] INFO_STR;
 }
 
 void twoValDriver(const TwoValFunc call_func, const char* image_name) {

@@ -1,6 +1,6 @@
 CC=g++
 
-CFLAGS=-fno-elide-constructors -O0 -fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,leak,nonnull-attribute,null,object-size,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr")
+CFLAGS=-fno-elide-constructors -O0
 
 
 SOURCES=main.cpp
