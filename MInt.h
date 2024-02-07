@@ -9,15 +9,15 @@
 
 static const char* VALUE_PREFIX  = "value";
 static const char*  OPER_PREFIX  = "oper";
-static const char* DEFAULT_COLOR = "red";
-static const char*    TEMP_COLOR = "darkgreen";
+static const char* DEFAULT_COLOR = "darkgreen";
+static const char*    TEMP_COLOR = "red";
 
 static const int   MAX_NAME_LENGTH    = 128;
 static const char* GRAPHVIZ_FILE_NAME = "graph.dot";
 static const int   DEFAULT_INT_VALUE  = 0;
-static const char* GRAPHVIZ_COLORS[]  = {"red", "green", "blue", 
+static const char* GRAPHVIZ_COLORS[]  = {"green", "blue", 
                                          "yellow", "orange", "turquoise", 
-                                         "sienna", "white", "cornflowerblue", 
+                                         "sienna", "cornflowerblue", 
                                          "chocolate4", "blueviolet", "darkgoldenrod1", 
                                          "darkblue", "darkmagenta"};
 static const int   COLOR_CNT          = sizeof(GRAPHVIZ_COLORS) / sizeof(const char*);
