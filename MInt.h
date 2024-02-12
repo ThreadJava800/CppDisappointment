@@ -1,16 +1,21 @@
 #ifndef _MINT_H_
 #define _MINT_H_
 
+#include <iostream>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <utility>
+
+#define NEED_OPTIMIZE true
 
 static const char* VALUE_PREFIX  = "value";
 static const char*  OPER_PREFIX  = "oper";
 static const char* DEFAULT_COLOR = "darkgreen";
-static const char*    TEMP_COLOR = "red";
+static const char*    COPY_COLOR = "red";
+static const char*    MOVE_COLOR = "blue";
 
 static const int   MAX_NAME_LENGTH    = 128;
 static const char* GRAPHVIZ_FILE_NAME = "graph.dot";
@@ -78,12 +83,11 @@ MInt operator oper() {                                    \
 
 #define POSTFIX_OPER(oper)                                \
 MInt operator oper(int) {                                 \
-    MInt ret_value = *this;                               \
     value oper;                                           \
                                                           \
     printf("OPERATOR %s, VALUE: %d\n", #oper, value);     \
     drawArrow(VALUE_PREFIX, id, VALUE_PREFIX, id, #oper); \
-    return ret_value;                                     \
+    return *this;                                         \
 }   
 
 
@@ -123,58 +127,96 @@ void drawOperBlock(int val_id, const char* oper, const char* color) {
     );
 }
 
+enum class CTOR_TYPE {
+    DEFAULT,
+    COPY,
+    MOVE
+};
+
 class MInt;
-void drawValueBlock(int val_id, int value, bool is_temp) {
-    const char*  color = DEFAULT_COLOR;
-    if (is_temp) color = TEMP_COLOR;
+void drawValueBlock(int val_id, int value, CTOR_TYPE type) {
+    const char* color = DEFAULT_COLOR;
+
+    switch (type) {
+    case CTOR_TYPE::COPY:
+        color = COPY_COLOR;
+        break;
+    case CTOR_TYPE::MOVE:
+        color = MOVE_COLOR;
+        break;
+    default:
+        color = DEFAULT_COLOR;
+        break;
+    }
 
     mprintf(
         DOT_FILE, 
-        "\t%s%ld[shape=record, style=\"rounded, filled\", fillcolor=\"%s\", label=\"{value: %ld | temp: %d}\"];\n", 
+        "\t%s%ld[shape=record, style=\"rounded, filled\", fillcolor=\"%s\", label=\"{value: %ld | type: %d}\"];\n", 
         VALUE_PREFIX,
         val_id, 
         color,
         value,
-        is_temp
+        type
     );
 }
 
-
 class MInt {
-public:
-    int  value   = DEFAULT_INT_VALUE;
-    int  id      = 0;
-    bool is_temp = false;
+public:     
+    int       value;
+    int       id;
+    CTOR_TYPE type;
 
-public:
-    explicit MInt(int _value) : value(_value), id(++VARIABLES_CNT) {
-        is_temp = false;
-        
+    explicit MInt(int _value) : value(_value), id(++VARIABLES_CNT), type(CTOR_TYPE::DEFAULT) {        
         printf("CTOR: id = %d, value = %d, addr = %p\n", id, value, this);
-        drawValueBlock(id - 1, value, is_temp);
-        drawValueBlock(id    , value, is_temp);
+        drawValueBlock(id - 1, value, type);
+        drawValueBlock(id    , value, type);
         drawArrow(VALUE_PREFIX, id - 1, VALUE_PREFIX, id, "CTOR");
 
         VARIABLES_CNT++;
     }
 
-    MInt(const MInt& another) : value(another.value), id(++VARIABLES_CNT) {
-        is_temp = true;
-
+    MInt(const MInt& another) : value(another.value), id(++VARIABLES_CNT), type(CTOR_TYPE::COPY) {
         printf("COPY CTOR: id = %d, value = %d, addr = %p\n", id, value, this);
-        drawValueBlock(id    , value, is_temp);
+        drawValueBlock(id, value, type);
         drawArrow(VALUE_PREFIX, another.id, VALUE_PREFIX, id, "COPY CTOR");
 
         VARIABLES_CNT++;
     }
 
+    #if NEED_OPTIMIZE
+    MInt (MInt&& another) noexcept
+                         : value(std::exchange(another.value, 0)),
+                           id(++VARIABLES_CNT),
+                           type(CTOR_TYPE::MOVE)      {
+        printf("MOVE CTOR: id = %d, value = %d, addr = %p\n", id, value, this);
+        drawValueBlock(id, value, type);
+        drawArrow(VALUE_PREFIX, another.id, VALUE_PREFIX, id, "MOVE CTOR");
+
+        VARIABLES_CNT++;
+    }
+    #endif
+
     ~MInt() {
         printf("DTOR: id = %d, value = %d, addr = %p\n", id, value, this);
         value = DEFAULT_INT_VALUE;
 
-        drawValueBlock(-id, value, is_temp);
+        drawValueBlock(-id, value, type);
         drawArrow(VALUE_PREFIX, id, VALUE_PREFIX, -id, "DTOR");
     }
+
+    #if NEED_OPTIMIZE
+    MInt& operator=(MInt&& another) {
+        value = std::move(another.value);
+        type  = CTOR_TYPE::MOVE;
+
+        printf("OPERATOR %s, VALUE: %d\n", "MOVE =", value);
+        drawArrow(VALUE_PREFIX, another.id, VALUE_PREFIX, id, "MOVE ="); 
+
+        return *this;
+    }
+    #else
+    MInt& operator=(MInt&& another) = default;
+    #endif
 
     ASSIGNMENT_OPER(=)
     ASSIGNMENT_OPER(+=)
