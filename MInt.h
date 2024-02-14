@@ -40,21 +40,6 @@ void operator oper(const MInt& val2) {                                          
 }                                                                                   \
 
 
-#define ARITHMETIC_OPER(oper)                                                    \
-MInt operator oper(const MInt& val2) {                                           \
-    printf("OPERATOR %s, VALUE: %d\n", #oper, value);                            \
-    MInt ret_value = MInt(value oper val2.value);                                \
-                                                                                 \
-    const char* color = getRandomColor();                                        \
-                                                                                 \
-    drawOperBlock(OPER_CNT++, #oper, color);                                     \
-    drawArrow(VALUE_PREFIX, id, OPER_PREFIX, OPER_CNT - 1, "", color);           \
-    drawArrow(VALUE_PREFIX, val2.id, OPER_PREFIX, OPER_CNT - 1, "", color);      \
-    drawArrow(OPER_PREFIX, OPER_CNT - 1, VALUE_PREFIX, ret_value.id, "", color); \
-    return ret_value;                                                            \
-}                                                                                \
-
-
 #define UNARY_OPER(oper)                                   \
 MInt operator oper() {                                     \
     value = oper value;                                    \
@@ -209,13 +194,10 @@ public:
         value = std::move(another.value);
         type  = CTOR_TYPE::MOVE;
 
-        printf("OPERATOR %s, VALUE: %d\n", "MOVE =", value);
-        drawArrow(VALUE_PREFIX, another.id, VALUE_PREFIX, id, "MOVE ="); 
-
         return *this;
     }
     #else
-    MInt& operator=(MInt&& another) = default;
+    MInt& operator=(MInt&& another) = delete;
     #endif
 
     ASSIGNMENT_OPER(=)
@@ -235,17 +217,6 @@ public:
     POSTFIX_OPER(++)
     POSTFIX_OPER(--)
 
-    ARITHMETIC_OPER(+)
-    ARITHMETIC_OPER(-)
-    ARITHMETIC_OPER(*)
-    ARITHMETIC_OPER(/)
-    ARITHMETIC_OPER(%)
-    ARITHMETIC_OPER(&)
-    ARITHMETIC_OPER(|)
-    ARITHMETIC_OPER(^)
-    ARITHMETIC_OPER(<<)
-    ARITHMETIC_OPER(>>)
-
     UNARY_OPER(+)
     UNARY_OPER(-)
     UNARY_OPER(~)
@@ -256,15 +227,6 @@ public:
     COMPARISON_OPER(>)
     COMPARISON_OPER(<=)
     COMPARISON_OPER(>=)
-
-    // logical operations
-    bool operator!() {
-        value = !value;
-        return value;
-    }
-
-    ARITHMETIC_OPER(&&)
-    ARITHMETIC_OPER(||)
 };
 
 #endif

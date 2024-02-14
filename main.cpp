@@ -8,16 +8,18 @@ typedef MInt (*ThreeValFunc)(MInt& val1, MInt& val2, MInt& val3);
 static const int M_RAND_MAX = 10;
 
 MInt mmax(MInt& val1, MInt& val2) {
-    if (val1 > val2) return val1;
-    return val2;
+    return val1 > val2 ? val1 : val2;
 }
 
 MInt sumOf2(MInt& val1, MInt& val2) {
-    return val1 + val2;
+    val1 += val2;
+    return val1;
 }
 
 MInt sumOf3(MInt& val1, MInt& val2, MInt& val3) {
-    return val1 + val2 + val3;
+    val1 += val2;
+    val1 += val3;
+    return val1;
 }
 
 MInt sameValFunc(MInt& val) {
@@ -25,7 +27,9 @@ MInt sameValFunc(MInt& val) {
 }
 
 MInt sumOfFuncs(MInt& val1, MInt& val2) {
-    return sameValFunc(val1) + sameValFunc(val2);
+    val1 = sameValFunc(val1);
+    val1 += sameValFunc(val2);
+    return val1;
 }
 
 void initDotFile() {

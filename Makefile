@@ -1,6 +1,6 @@
 CC=g++
 
-CFLAGS=-fno-elide-constructors -O0
+CFLAGS=-O0
 
 
 SOURCES=main.cpp
