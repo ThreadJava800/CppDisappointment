@@ -13,7 +13,7 @@
 <g id="node1" class="node">
 <title>value0</title>
 <path fill="darkgreen" stroke="black" d="M12,-67.5C12,-67.5 125.75,-67.5 125.75,-67.5 131.75,-67.5 137.75,-73.5 137.75,-79.5 137.75,-79.5 137.75,-91.5 137.75,-91.5 137.75,-97.5 131.75,-103.5 125.75,-103.5 125.75,-103.5 12,-103.5 12,-103.5 6,-103.5 0,-97.5 0,-91.5 0,-91.5 0,-79.5 0,-79.5 0,-73.5 6,-67.5 12,-67.5"/>
-<text text-anchor="middle" x="36.12" y="-81.2" font-family="Times,serif" font-size="14.00">value: 6</text>
+<text text-anchor="middle" x="36.12" y="-81.2" font-family="Times,serif" font-size="14.00">value: 4</text>
 <polyline fill="none" stroke="black" points="72.25,-68.25 72.25,-103.5"/>
 <text text-anchor="middle" x="105" y="-81.2" font-family="Times,serif" font-size="14.00">type: 0</text>
 </g>
@@ -21,7 +21,7 @@
 <g id="node2" class="node">
 <title>value1</title>
 <path fill="darkgreen" stroke="black" d="M227,-67.5C227,-67.5 340.75,-67.5 340.75,-67.5 346.75,-67.5 352.75,-73.5 352.75,-79.5 352.75,-79.5 352.75,-91.5 352.75,-91.5 352.75,-97.5 346.75,-103.5 340.75,-103.5 340.75,-103.5 227,-103.5 227,-103.5 221,-103.5 215,-97.5 215,-91.5 215,-91.5 215,-79.5 215,-79.5 215,-73.5 221,-67.5 227,-67.5"/>
-<text text-anchor="middle" x="251.12" y="-81.2" font-family="Times,serif" font-size="14.00">value: 6</text>
+<text text-anchor="middle" x="251.12" y="-81.2" font-family="Times,serif" font-size="14.00">value: 4</text>
 <polyline fill="none" stroke="black" points="287.25,-68.25 287.25,-103.5"/>
 <text text-anchor="middle" x="320" y="-81.2" font-family="Times,serif" font-size="14.00">type: 0</text>
 </g>
@@ -36,7 +36,7 @@
 <g id="node4" class="node">
 <title>value3</title>
 <path fill="darkgreen" stroke="black" d="M487,-12.5C487,-12.5 600.75,-12.5 600.75,-12.5 606.75,-12.5 612.75,-18.5 612.75,-24.5 612.75,-24.5 612.75,-36.5 612.75,-36.5 612.75,-42.5 606.75,-48.5 600.75,-48.5 600.75,-48.5 487,-48.5 487,-48.5 481,-48.5 475,-42.5 475,-36.5 475,-36.5 475,-24.5 475,-24.5 475,-18.5 481,-12.5 487,-12.5"/>
-<text text-anchor="middle" x="511.12" y="-26.2" font-family="Times,serif" font-size="14.00">value: 5</text>
+<text text-anchor="middle" x="511.12" y="-26.2" font-family="Times,serif" font-size="14.00">value: 1</text>
 <polyline fill="none" stroke="black" points="547.25,-13.25 547.25,-48.5"/>
 <text text-anchor="middle" x="580" y="-26.2" font-family="Times,serif" font-size="14.00">type: 0</text>
 </g>
@@ -51,7 +51,7 @@
 <g id="node5" class="node">
 <title>value5</title>
 <path fill="red" stroke="black" d="M487,-80.5C487,-80.5 600.75,-80.5 600.75,-80.5 606.75,-80.5 612.75,-86.5 612.75,-92.5 612.75,-92.5 612.75,-104.5 612.75,-104.5 612.75,-110.5 606.75,-116.5 600.75,-116.5 600.75,-116.5 487,-116.5 487,-116.5 481,-116.5 475,-110.5 475,-104.5 475,-104.5 475,-92.5 475,-92.5 475,-86.5 481,-80.5 487,-80.5"/>
-<text text-anchor="middle" x="511.12" y="-94.2" font-family="Times,serif" font-size="14.00">value: 6</text>
+<text text-anchor="middle" x="511.12" y="-94.2" font-family="Times,serif" font-size="14.00">value: 4</text>
 <polyline fill="none" stroke="black" points="547.25,-81.25 547.25,-116.5"/>
 <text text-anchor="middle" x="580" y="-94.2" font-family="Times,serif" font-size="14.00">type: 1</text>
 </g>
@@ -66,7 +66,7 @@
 <g id="node3" class="node">
 <title>value2</title>
 <path fill="darkgreen" stroke="black" d="M227,-0.5C227,-0.5 340.75,-0.5 340.75,-0.5 346.75,-0.5 352.75,-6.5 352.75,-12.5 352.75,-12.5 352.75,-24.5 352.75,-24.5 352.75,-30.5 346.75,-36.5 340.75,-36.5 340.75,-36.5 227,-36.5 227,-36.5 221,-36.5 215,-30.5 215,-24.5 215,-24.5 215,-12.5 215,-12.5 215,-6.5 221,-0.5 227,-0.5"/>
-<text text-anchor="middle" x="251.12" y="-14.2" font-family="Times,serif" font-size="14.00">value: 5</text>
+<text text-anchor="middle" x="251.12" y="-14.2" font-family="Times,serif" font-size="14.00">value: 1</text>
 <polyline fill="none" stroke="black" points="287.25,-1.25 287.25,-36.5"/>
 <text text-anchor="middle" x="320" y="-14.2" font-family="Times,serif" font-size="14.00">type: 0</text>
 </g>

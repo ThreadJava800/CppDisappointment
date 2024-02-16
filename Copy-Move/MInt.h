@@ -151,7 +151,11 @@ public:
     int       id;
     CTOR_TYPE type;
 
-    explicit MInt(int _value) : value(_value), id(++VARIABLES_CNT), type(CTOR_TYPE::DEFAULT) {        
+    explicit MInt(int _value) : 
+        value(_value), 
+        id   (++VARIABLES_CNT), 
+        type (CTOR_TYPE::DEFAULT) {        
+        
         printf("CTOR: id = %d, value = %d, addr = %p\n", id, value, this);
         drawValueBlock(id - 1, value, type);
         drawValueBlock(id    , value, type);
@@ -160,7 +164,11 @@ public:
         VARIABLES_CNT++;
     }
 
-    MInt(const MInt& another) : value(another.value), id(++VARIABLES_CNT), type(CTOR_TYPE::COPY) {
+    MInt(const MInt& another) : 
+        value(another.value), 
+        id   (++VARIABLES_CNT), 
+        type (CTOR_TYPE::COPY) {
+
         printf("COPY CTOR: id = %d, value = %d, addr = %p\n", id, value, this);
         drawValueBlock(id, value, type);
         drawArrow(VALUE_PREFIX, another.id, VALUE_PREFIX, id, "COPY CTOR");
