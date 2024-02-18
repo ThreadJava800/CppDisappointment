@@ -1,8 +1,8 @@
 CC=g++
 
-CFLAGS=-O2
+CFLAGS=-O0 -g
 
-SOURCES=main.cpp
+SOURCES= main.cpp
 LOGFILE=logs
 EXECUTABLE=test
  
