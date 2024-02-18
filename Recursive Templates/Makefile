@@ -2,17 +2,23 @@ CC=g++
 
 CFLAGS=-O0 -g
 
-SOURCES= main.cpp
+MAIN_SOURCES=main.cpp
+PLAY_SOURCES=playground.cpp
 LOGFILE=logs
 EXECUTABLE=test
  
 all: compile run
 
+play: compile_play run
+
 erase:
 	clear
 
 compile:
-	${CC} ${CFLAGS} $(SOURCES) -o $(EXECUTABLE)
+	${CC} ${CFLAGS} $(MAIN_SOURCES) -o $(EXECUTABLE)
+
+compile_play:
+	${CC} ${CFLAGS} $(PLAY_SOURCES) -o $(EXECUTABLE)
 
 run:
 	./${EXECUTABLE} > logs

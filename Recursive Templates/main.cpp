@@ -1,35 +1,44 @@
-#include <iostream>
+#include "main.hpp"
 
-#include "matrix.hpp"
-
-constexpr int MAX_RAND_VALUE = 10;
+#include <ctime>
+#include <cstdlib>
+#include <cstdio>
 
 int main() {
     srand((unsigned)time(NULL));
 
-    std::cout << addNums(1, 2, 3, 4, 5) << '\n';
-
-    Array arr1, arr2;
-    for (size_t i = 0; i < VALUE_COUNT; i++) {
-        arr1.values[i] = rand() % MAX_RAND_VALUE;
-        arr2.values[i] = rand() % MAX_RAND_VALUE;
+    Array2Dim arr1, arr2;
+    for (size_t i = 0; i < ROW_CNT; i++) {
+        for (size_t j = 0; j < COL_CNT; j++) {
+            arr1.rows[i].columns[j] = rand() % MAX_RAND_VALUE;
+            arr2.rows[i].columns[j] = rand() % MAX_RAND_VALUE;
+        }
     }
 
-    int* result = proceedArrSum(arr1, arr2);
-    for (size_t i = 0; i < VALUE_COUNT; i++) {
-        std::cout << result[i] << ' ';
-    }
-    std::cout << '\n';
+    Array2Dim* res_arr = proceedArr2Sum(&arr1, &arr2);
 
-    for (size_t i = 0; i < VALUE_COUNT; i++) {
-        std::cout << arr1.values[i] << ' ';
+    for (size_t i = 0; i < ROW_CNT; i++) {
+        for (size_t j = 0; j < COL_CNT; j++) {
+            printf("%.2d ", arr1.rows[i].columns[j]);
+        }
+        printf("\n");
     }
-    std::cout << '\n';
+    printf("\n");
 
-    for (size_t i = 0; i < VALUE_COUNT; i++) {
-        std::cout << arr2.values[i] << ' ';
+    for (size_t i = 0; i < ROW_CNT; i++) {
+        for (size_t j = 0; j < COL_CNT; j++) {
+            printf("%.2d ", arr2.rows[i].columns[j]);
+        }
+        printf("\n");
     }
-    std::cout << '\n';
+    printf("\n");
+
+    for (size_t i = 0; i < ROW_CNT; i++) {
+        for (size_t j = 0; j < COL_CNT; j++) {
+            printf("%.2d ", res_arr->rows[i].columns[j]);
+        }
+        printf("\n");
+    }
 
     return 0;
 }

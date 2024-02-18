@@ -21,6 +21,7 @@ int addNums() {
 }
 
 // add simple arrays
+
 struct Array {
     int values[VALUE_COUNT] ;
 };
@@ -42,6 +43,32 @@ int* proceedArrSum(Array& arr1, Array& arr2) {
     doArraySum<0u>(values, arr1, arr2);
 
     return values;
+}
+
+#define COLUMN_COUNT 5
+
+// 2dim arrays sum
+struct Array2 {
+    int values[COLUMN_COUNT][VALUE_COUNT];
+};
+
+template<size_t col_id>
+void doArray2Sum(Array2& res_arr2, Array2& arr1, Array2& arr2) {
+    doArraySum<VALUE_COUNT>(res_arr2.values[col_id], arr1.values[col_id], arr2.values[col_id]);
+    doArray2Sum<col_id + 1>(res_arr2, arr1, arr2);
+}
+
+template<>
+void doArray2Sum<COLUMN_COUNT>(Array2& res_arr2, Array2& arr1, Array2& arr2) {
+    return;
+}
+
+Array2 proceedArr2Sum(Array2& arr1, Array2& arr2) {
+    static Array2 res_arr;
+
+    doArray2Sum<0u>(res_arr, arr1, arr2);
+
+    return res_arr;
 }
 
 #endif
