@@ -1,6 +1,6 @@
 CC=g++
 
-CFLAGS=-O0 -g
+CFLAGS=-O0 -g -std=c++23
 
 MAIN_SOURCES=main.cpp
 PLAY_SOURCES=playground.cpp

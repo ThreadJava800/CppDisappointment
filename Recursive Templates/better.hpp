@@ -1,6 +1,7 @@
 #ifndef _BETTER_H_
 #define _BETTER_H_
 
+#include <concepts>
 #include <cstdio>
 
 template<typename T, size_t col_cnt>
@@ -15,6 +16,7 @@ struct Array2Dim {
 
 
 template<typename T, size_t col_cnt, size_t index>
+requires (index <= col_cnt)
 struct SumArray1Dim {
     void operator() (Array1Dim<T, col_cnt>& res_arr, Array1Dim<T, col_cnt>& arr1, Array1Dim<T, col_cnt>& arr2) {
         res_arr.array[index] = arr1.array[index] + arr2.array[index];
@@ -32,6 +34,7 @@ struct SumArray1Dim<T, col_cnt, col_cnt> {
 };
 
 template<typename T, size_t col_cnt, size_t row_cnt, size_t index>
+requires (index <= row_cnt)
 struct SumArray2Dim {
     void operator() (Array2Dim<T, col_cnt, row_cnt>& res_arr, Array2Dim<T, col_cnt, row_cnt>& arr1, Array2Dim<T, col_cnt, row_cnt>& arr2) {
         SumArray1Dim<T, col_cnt, 0> array_sum;
