@@ -6,7 +6,7 @@
 #define VALUE_COUNT 5
 
 // add values
-
+// 
 template<typename... Other>
 int addNums(Other... args);
 
@@ -25,7 +25,7 @@ int addNums() {
 struct Array {
     int values[VALUE_COUNT] ;
 };
-
+// TODO: add concept (SPHINAE)
 template<size_t cur_id>
 void doArraySum(int* res_arr, Array& arr1, Array& arr2) {
     res_arr[cur_id] = arr1.values[cur_id] + arr2.values[cur_id];
