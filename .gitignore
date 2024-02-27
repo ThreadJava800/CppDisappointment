@@ -95,6 +95,7 @@ dkms.conf
 # Local History for Visual Studio Code
 .history/
 
+test.go
 # Built Visual Studio Code Extensions
 *.vsix
 
