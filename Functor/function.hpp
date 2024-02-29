@@ -3,6 +3,13 @@
 
 #include <stdexcept>
 
+template<typename T, typename... Args>
+constexpr auto bind(T func, Args... args) {
+    return [=] {
+        return func(args...);
+    };
+}
+
 template<typename>
 class Function;
 
