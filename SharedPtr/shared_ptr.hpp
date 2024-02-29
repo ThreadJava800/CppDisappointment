@@ -6,14 +6,6 @@
 #include <stdexcept>
 #include <type_traits>
 
-
-template<typename T>
-struct DefaultDeleter {
-    void operator()(T* value) {
-        delete value;
-    }
-};
-
 template<typename T, class Deleter>
 class ControlBlock {
 public:
@@ -41,7 +33,7 @@ public:
         shared_ptr_counter--;
     }
 
-    T* getValuePtr() const noexcept {
+    virtual T* getValuePtr() const noexcept {
         return value;
     }
 
@@ -49,29 +41,76 @@ public:
         return shared_ptr_counter;
     }
 
-    ~ControlBlock() {
+    virtual ~ControlBlock() {
         deleter(value);
     }
 
 private:
     T*      value;
-    size_t  shared_ptr_counter;
     Deleter deleter;
+
+protected:
+    size_t shared_ptr_counter;
+};
+
+template<typename T>
+struct DefaultDeleter {
+    void operator()(T* value) {
+    }
 };
 
 template<typename T, class Deleter = DefaultDeleter<T>>
-class SharedPtr {
+struct DefaultAllocator {
+    ControlBlock<T, Deleter>* operator()(T* value, Deleter deleter = DefaultDeleter<T>()) {
+        return new ControlBlock<T, Deleter>(value, deleter);
+    }
+};
+
+template<typename T>
+class SharedControlBlock : public ControlBlock<T, DefaultDeleter<T>> {
 public:
+    explicit SharedControlBlock(T _value)
+        : ControlBlock<T, DefaultDeleter<T>>(nullptr),
+          value(_value) {
+    }
+
+    T* getValuePtr() const noexcept override {
+        T* value_ptr = const_cast<T*>(&value);
+        return value_ptr;
+    }
+
+private:
+    T value;
+};
+
+template<typename T>
+struct SharedAllocator {
+    ControlBlock<T, DefaultDeleter<T>>* operator()(T value) {
+        return new SharedControlBlock<T>(value);
+    }
+};
+
+template<typename T, class Deleter = DefaultDeleter<T>, class Allocator = DefaultAllocator<T, Deleter>>
+class SharedPtr {
+private:
+    explicit SharedPtr(T _value) 
+        : control_block(Allocator()(_value)) {
+    }
+
+public:
+    template<typename U>
+    friend SharedPtr<U, DefaultDeleter<U>, SharedAllocator<U>> makeShared(U value);
+
     explicit SharedPtr(std::nullptr_t _value = nullptr)
-        : control_block(new ControlBlock<T, Deleter>(_value)) {
+        : control_block(Allocator()(_value)) {
     }
 
     explicit SharedPtr(T* _value) 
-        : control_block(new ControlBlock<T, Deleter>(_value)) {
+        : control_block(Allocator()(_value)) {
     }
 
     explicit SharedPtr(T* _value, Deleter _deleter) 
-        : control_block(new ControlBlock<T, Deleter>(_value, _deleter)) {
+        : control_block(Allocator()(_value, _deleter)) {
     }
 
     SharedPtr(const SharedPtr& other) noexcept
@@ -103,7 +142,11 @@ public:
     }
 
     ~SharedPtr() {
-        if (control_block && control_block->getSharedCount() == 0)
+        if (!control_block) return;
+
+        control_block->removeSharedPtr();
+
+        if (control_block->getSharedCount() == 0)
             delete control_block;
     }
 
@@ -140,5 +183,10 @@ public:
 private:
     ControlBlock<T, Deleter>* control_block;
 };
+
+template<typename U>
+static SharedPtr<U, DefaultDeleter<U>, SharedAllocator<U>> makeShared(U value) {
+    return SharedPtr<U, DefaultDeleter<U>, SharedAllocator<U>>(value);
+}
 
 #endif

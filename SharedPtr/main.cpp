@@ -4,7 +4,7 @@
 
 int main() {
     int test_val = 5;
-    SharedPtr<int> shared_ptr(&test_val);
+    auto shared_ptr = makeShared<int>(5);
 
     std::cout << *shared_ptr << '\n';
     *shared_ptr = 4;
