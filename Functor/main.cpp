@@ -11,11 +11,9 @@ int main() {
         std::cout << "TEST\n";
     });
 
-    auto yyy = []{
-        std::cout << "TEST\n";
-    };
+    Function<void()> test2(testfun);
 
-    // Function<void()> test(testfun);
+    test = std::move(test2);
 
     test();
 

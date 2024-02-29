@@ -17,6 +17,36 @@ public:
         : functor_ptr(new Functor<U>(functor)) {
     }
 
+    Function(const Function& other) {
+        if (!other.functor_ptr) throw std::invalid_argument("Functor ptr was NULL!");
+        functor_ptr = other.functor_ptr->createCopy();
+    }
+
+    Function& operator=(const Function& other) {
+        if (!other.functor_ptr) throw std::invalid_argument("Functor ptr was NULL!");
+
+        delete functor_ptr;
+        functor_ptr = other.functor_ptr->createCopy();
+
+        return *this;
+    }
+
+    Function(Function&& other) noexcept
+        : functor_ptr(other.functor_ptr) {
+        other.functor_ptr = nullptr;
+    }
+
+    Function& operator=(Function&& other) noexcept {
+        if (this != &other) {
+            delete functor_ptr;
+
+            functor_ptr = other.functor_ptr;
+            other.functor_ptr = nullptr;
+        }
+
+        return *this;
+    }
+
     Return operator()(Args... args) const {
         if (!functor_ptr) throw std::invalid_argument("Functor ptr was NULL!");
         return (*functor_ptr)(args...);
@@ -24,6 +54,11 @@ public:
 
     operator bool() const noexcept {
         return functor_ptr;
+    }
+
+    const std::type_info& targetType() const {
+        if (!functor_ptr) throw std::invalid_argument("Functor ptr was NULL!");
+        return functor_ptr->targetType();
     }
 
     template<typename U>
@@ -40,6 +75,8 @@ private:
         virtual Return                operator()(Args... args) const          = 0;
         virtual const std::type_info& targetType()             const noexcept = 0;
         virtual                      ~IFunctor  ()                            = default;
+
+        virtual IFunctor* createCopy() const = 0;
     };
 
     template<typename T>
@@ -49,8 +86,30 @@ private:
             : target(_target) {
         }
 
+        Functor(const Functor& other)
+            : target(other.target) {
+        }
+
+        Functor& operator=(const Functor& other) {
+            target = other.target;
+            return *this;
+        }
+
+        Functor(Functor&& other)
+            : target(std::move(other.target)) {
+        }
+
+        Functor& operator=(Functor&& other) {
+            target = std::move(other.target);
+            return *this;
+        }
+
         Return operator()(Args... args) const override {
             return target(args...);
+        }
+
+        IFunctor* createCopy() const override {
+            return new Functor<T>(target);
         }
 
         const std::type_info& targetType() const noexcept override {
