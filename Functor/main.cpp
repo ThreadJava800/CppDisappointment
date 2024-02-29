@@ -11,6 +11,10 @@ int main() {
         std::cout << "TEST\n";
     });
 
+    auto yyy = []{
+        std::cout << "TEST\n";
+    };
+
     // Function<void()> test(testfun);
 
     test();
