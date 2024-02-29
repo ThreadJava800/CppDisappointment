@@ -21,6 +21,10 @@ int main() {
     int test_val = 5;
     auto shared_ptr = makeShared<int>(5);
 
+    // auto shared_ptr2 = makeShared<int>(2);
+    // shared_ptr = shared_ptr2;
+    // auto shared_ptr3 = SharedPtr<int, DefaultDeleter<int>, SharedAllocator<int>>(shared_ptr);
+
     std::thread t1{testThread, "t1", shared_ptr}, t2{testThread, "t2", shared_ptr}, t3{testThread, "t3", shared_ptr};
 
     // std::cout << *shared_ptr << '\n';

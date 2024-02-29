@@ -41,7 +41,7 @@ public:
         shared_ptr_counter--;
     }
 
-    virtual T* getValuePtr() const noexcept {
+    virtual T* getValuePtr() const {
         return value;
     }
 
@@ -85,7 +85,7 @@ public:
           value(_value) {
     }
 
-    T* getValuePtr() const noexcept override {
+    T* getValuePtr() const override {
         return const_cast<T*>(&value);
     }
 
@@ -130,6 +130,9 @@ public:
     }
 
     SharedPtr& operator=(const SharedPtr& other) noexcept {
+        if (control_block != other.control_block)
+            delete control_block;
+
         control_block = other.control_block;
         if (control_block) 
             control_block->addSharedPtr(); 
@@ -138,15 +141,17 @@ public:
     }
 
     SharedPtr(SharedPtr&& other) noexcept
-        : control_block(std::move(other.control_block)) {
-        if (control_block) 
-            control_block->addSharedPtr(); 
+        : control_block(other.control_block) {
+        other.control_block = nullptr;
     }
 
     SharedPtr& operator=(SharedPtr&& other) noexcept {
-        control_block = std::move(other.control_block);
-        if (control_block) 
-            control_block->addSharedPtr(); 
+        if (this != &other) {
+            delete control_block;
+
+            control_block = other.control_block;
+            other.control_block = nullptr;
+        }
 
         return *this;
     }
