@@ -1,10 +1,14 @@
 #ifndef _SHARED_PTR_H_
 #define _SHARED_PTR_H_
 
+#include <atomic>
 #include <cstdlib>
 #include <functional>
 #include <stdexcept>
 #include <type_traits>
+
+#define IS_THREAD_SAFE 1
+
 
 template<typename T, class Deleter>
 class ControlBlock {
@@ -22,7 +26,11 @@ public:
     }
 
     size_t getSharedCount() const noexcept {
+    #ifndef IS_THREAD_SAFE
         return shared_ptr_counter;
+    #else
+        return shared_ptr_counter.load();
+    #endif
     }
 
     void addSharedPtr() noexcept {
@@ -49,8 +57,11 @@ private:
     T*      value;
     Deleter deleter;
 
-protected:
-    size_t shared_ptr_counter;
+#ifndef IS_THREAD_SAFE
+    size_t  shared_ptr_counter;
+#else
+    std::atomic<uint32_t> shared_ptr_counter{1};
+#endif
 };
 
 template<typename T>
@@ -75,8 +86,7 @@ public:
     }
 
     T* getValuePtr() const noexcept override {
-        T* value_ptr = const_cast<T*>(&value);
-        return value_ptr;
+        return const_cast<T*>(&value);
     }
 
 private:
