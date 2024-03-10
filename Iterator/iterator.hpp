@@ -65,6 +65,37 @@ struct input_iterator : public iterator<
                                         T&
                                         > {};
 
+template<class STL_Container, typename T>
+class push_back_iterator : public output_iterator<STL_Container> {
+public:
+
+    using iterator_category = output_iterator_tag;
+    using value_type        = T;
+    using difference_type   = ptrdiff_t;
+    using pointer           = T*;
+    using reference         = T&;
+
+    explicit push_back_iterator(STL_Container& _container)
+        : container(&_container) {}
+
+    push_back_iterator<STL_Container, T>& operator*() {
+        return *this;
+    }
+
+    push_back_iterator<STL_Container, T>& operator++() { 
+        return *this; 
+    } 
+
+    push_back_iterator<STL_Container, T>& operator=(const T& value) {
+        if (container) container->push_back(value);
+
+        return *this;
+    }
+
+private:
+    STL_Container* container;
+};
+
 template<typename T>
 class istream_iterator : public input_iterator<T> {
 public:
@@ -76,10 +107,12 @@ public:
     using reference         = T&;
 
     explicit istream_iterator()
-        : stream(nullptr) {}
+        : stream          (nullptr),
+          is_proceed_input(true) {}
 
     explicit istream_iterator(std::istream& _stream)
-        : stream(&_stream) {}
+        : stream          (&_stream),
+          is_proceed_input(true) {}
 
     const T& operator*() const {
         return input_value;
@@ -91,16 +124,18 @@ public:
 
     istream_iterator& operator++() {
         if (stream) *stream >> input_value;
+        is_proceed_input = !!(*stream);
 
         return *this;
     }
 
     bool operator==(const istream_iterator& other) {
-        return stream == other.stream;
+        return stream == other.stream || !is_proceed_input;
     }
 
 private:
     std::istream* stream;
+    bool          is_proceed_input;
     T             input_value;
 };
 

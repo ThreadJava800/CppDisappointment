@@ -6,6 +6,7 @@ SANITIZER=-fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,floa
 MAIN_SOURCES=main.cpp
 
 LOGFILE=logs
+READ_FROM=data.txt
 EXECUTABLE=test
  
 all: compile run
@@ -17,7 +18,7 @@ compile:
 	${CC} ${CFLAGS} ${SANITIZER} $(MAIN_SOURCES) -o $(EXECUTABLE)
 
 run:
-	./${EXECUTABLE} > ${LOGFILE}
+	./${EXECUTABLE} < ${READ_FROM} > ${LOGFILE}
 
 clean:
 	@rm -rf ${EXECUTABLE}
