@@ -47,13 +47,74 @@ struct iterator {
     using reference         = Reference;
 };
 
-struct output_iterator {};
+template<typename T>
+struct output_iterator : public iterator<
+                                        output_iterator_tag,
+                                        T,
+                                        ptrdiff_t,
+                                        T*,
+                                        T&
+                                        > {};
 
 template<typename T>
-class ostream_iterator : public output_iterator {
+struct input_iterator : public iterator<
+                                        input_iterator_tag,
+                                        T,
+                                        ptrdiff_t,
+                                        T*,
+                                        T&
+                                        > {};
+
+template<typename T>
+class istream_iterator : public input_iterator<T> {
 public:
 
-    ostream_iterator(std::ostream& _stream, const char* _stream_value = nullptr)
+    using iterator_category = input_iterator_tag;
+    using value_type        = T;
+    using difference_type   = ptrdiff_t;
+    using pointer           = T*;
+    using reference         = T&;
+
+    explicit istream_iterator()
+        : stream(nullptr) {}
+
+    explicit istream_iterator(std::istream& _stream)
+        : stream(&_stream) {}
+
+    const T& operator*() const {
+        return input_value;
+    }
+
+    istream_iterator& operator=(istream_iterator&) {
+        return *this;
+    }
+
+    istream_iterator& operator++() {
+        if (stream) *stream >> input_value;
+
+        return *this;
+    }
+
+    bool operator==(const istream_iterator& other) {
+        return stream == other.stream;
+    }
+
+private:
+    std::istream* stream;
+    T             input_value;
+};
+
+template<typename T>
+class ostream_iterator : public output_iterator<T> {
+public:
+
+    using iterator_category = output_iterator_tag;
+    using value_type        = T;
+    using difference_type   = ptrdiff_t;
+    using pointer           = T*;
+    using reference         = T&;
+
+    explicit ostream_iterator(std::ostream& _stream, const char* _stream_value = nullptr)
         : stream      (&_stream),
           stream_value(_stream_value) {}
 

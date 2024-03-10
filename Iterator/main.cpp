@@ -3,13 +3,11 @@
 #include "iterator.hpp"
 
 int main() {
-    std::vector<int> values;
-    for (int i = 0; i < 100; i++) {
-        values.push_back(i);
-    }
+    istream_iterator<int> istream_start(std::cin);
+    istream_iterator<int> istream_end;
 
     ostream_iterator<int> ostream_test(std::cout, ",");
-    std::copy(values.begin(), values.end(), ostream_test);
+    std::copy(istream_start, istream_end, ostream_test);
 
     return 0;
 }
