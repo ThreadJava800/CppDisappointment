@@ -2,6 +2,7 @@ CC=g++
 
 CFLAGS=-O0 -g -std=c++23
 SANITIZER=-fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,leak,nonnull-attribute,null,object-size,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
+# SANITIZER=
 
 MAIN_SOURCES=main.cpp
 

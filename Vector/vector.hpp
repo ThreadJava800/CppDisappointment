@@ -10,6 +10,67 @@
 
 namespace m_vector{
 
+template<typename T, class InputIterator>
+void fill(InputIterator start, InputIterator end, T& value) {
+    for (; start != end; ++start) {
+        *start = value;
+    }
+}
+template<class InputIterator, class OutputIterator>
+void copy(InputIterator start, InputIterator end, OutputIterator output) {
+    for (; start != end; ++start, ++output) {
+        *output = *start;
+    }
+}
+template<class InputIterator, class OutputIterator, typename size_type>
+void copy(InputIterator start, InputIterator end, OutputIterator output, size_type max_count) {
+    InputIterator beginning = start;
+    for (; (start != end) && (start - beginning < max_count); ++start, ++output) {
+        *output = *start;
+    }
+}
+template<class InputIterator, class OutputIterator>
+void copyBackwards(InputIterator start, InputIterator end, OutputIterator output) {
+    for (; start != end; --start, --output) {
+        *output = *start;
+    }
+}
+
+template<typename T>
+class initializer_list {
+public:
+
+    using value_type      = T;
+    using reference       = const T&;
+    using const_reference = const T&;
+    using size_type       = std::size_t;
+    using iterator        = const T*;
+    using const_iterator  = const T*;
+
+    constexpr initializer_list() noexcept
+        : args_start (nullptr),
+          args_end   (nullptr) {
+    }
+    constexpr const_iterator begin() const noexcept {
+        return args_start;
+    }
+    constexpr const_iterator end() const noexcept {
+        return args_end;
+    }
+    constexpr size_type size() const noexcept {
+        return static_cast<size_type>(args_end - args_start);
+    }
+
+private:
+    constexpr initializer_list(const_iterator iterator, size_type size)
+        : args_start (iterator),
+          args_end   (iterator + size) { 
+    }
+
+    initializer_list::iterator args_start;
+    initializer_list::iterator args_end;
+};
+
 template<
         typename T,
         class Allocator = allocator<T>
@@ -28,65 +89,48 @@ public:
     using const_pointer   = const Allocator::pointer_type;
 
 private:
-    class iterator : public input_iterator<T> {
+    class vector_iterator : public input_iterator<T> {
     public:
-        constexpr explicit iterator(pointer ptr)
+        constexpr explicit vector_iterator(pointer ptr)
             : ptr_(ptr) {
         }
         constexpr reference operator*() const {
-            if (!ptr_) throw std::invalid_argument("Iterator ptr is NULL!");
+            if (!ptr_) throw std::invalid_argument("vector_iterator ptr is NULL!");
             return *ptr_;
         }
-        constexpr iterator& operator++() {
+        constexpr vector_iterator& operator++() {
             ptr_++;
             return *this;
         }
-        constexpr iterator operator+(size_type n) const {
-            return iterator(ptr_ + n);
+        constexpr vector_iterator operator+(size_type n) const {
+            return vector_iterator(ptr_ + n);
         }
-        constexpr size_type operator-(const iterator& another) const {
+        constexpr size_type operator-(const vector_iterator& another) const {
             return ptr_ - another.ptr_;
         }
-        constexpr iterator operator-(size_type n) const {
-            return iterator(ptr_ - n);
+        constexpr vector_iterator operator-(size_type n) const {
+            return vector_iterator(ptr_ - n);
         }
-        constexpr iterator& operator--() {
+        constexpr vector_iterator& operator--() {
             ptr_--;
             return *this;
         }
-        constexpr bool operator==(const iterator& other) const {
+        constexpr bool operator==(const vector_iterator& other) const {
             return ptr_ == other.ptr_;
         }
-        constexpr bool operator!=(const iterator& other) const {
+        constexpr bool operator!=(const vector_iterator& other) const {
             return ptr_ != other.ptr_;
         }
         constexpr const_pointer getPtr() const {
             return ptr_;
         }
-    private:
+    protected:
         pointer ptr_;
     };
 
-    void fill(iterator start, iterator end, const_reference value) {
-        for (; start != end; ++start) {
-            *start = value;
-        }
-    }
-    void copy(iterator start, iterator end, iterator output) {
-        for (; start != end; ++start, ++output) {
-            *output = *start;
-        }
-    }
-    void copy(iterator start, iterator end, iterator output, size_type max_count) {
-        iterator beginning = start;
-        for (; (start != end) && (start - beginning < max_count); ++start, ++output) {
-            *output = *start;
-        }
-    }
-
 public:
 
-    using const_iterator  = const iterator;
+    using const_iterator  = const vector_iterator;
 
     //=============CONSTRUCTORS=============//
     constexpr vector() noexcept(noexcept(Allocator()))
@@ -113,6 +157,13 @@ public:
           start_value  (allocator_.allocate(count)),
           end_value    (start_value + count),
           end_capacity (end_value) {
+    }
+    constexpr vector(input_iterator<T> first, input_iterator<T> last, const Allocator& allocator = Allocator())
+        : allocator_   (allocator),
+          start_value  (allocator_.allocate(last - first)),
+          end_value    (start_value + (last - first)),
+          end_capacity (end_value) {
+        copy(first, last, start_value);
     }
     constexpr vector(const vector& another)
         : allocator_   (another.allocator_),
@@ -156,6 +207,13 @@ public:
             copy(another.begin(), another.end(), begin());
         }
     }
+    constexpr vector(std::initializer_list<T> init_list, const Allocator& allocator = Allocator())
+        : allocator_   (allocator),
+          start_value  (allocator_.allocate(init_list.size())),
+          end_value    (start_value + init_list.size()),
+          end_capacity (end_value) {
+        copy(init_list.begin(), init_list.end(), start_value);
+    }
     ~vector() {
         allocator_.deallocate(start_value.getPtr(), capacity());
     }
@@ -185,6 +243,10 @@ public:
 
         return *this;
     }
+    constexpr vector& operator=(std::initializer_list<T> init_list) {
+        resize(init_list.size());
+        copy(init_list.begin(), init_list.end(), start_value);
+    }
     constexpr reference operator[](size_type pos) {
         if (pos >= capacity()) throw std::out_of_range("Position was greater capacity!"); 
         return static_cast<reference>(*(start_value + pos));
@@ -195,7 +257,7 @@ public:
     }
 
     //=============ITERATORS=============//
-    constexpr iterator begin() noexcept {
+    constexpr vector_iterator begin() noexcept {
         return start_value;
     }
     constexpr const_iterator begin() const noexcept {
@@ -204,7 +266,7 @@ public:
     constexpr const_iterator cbegin() const noexcept {
         return start_value;
     }
-    constexpr iterator end() noexcept {
+    constexpr vector_iterator end() noexcept {
         return end_value;
     }
     constexpr const_iterator end() const noexcept {
@@ -273,18 +335,12 @@ private:
     static constexpr double RESIZE_COEFFICIENT = 1.61;
     constexpr void tryRealloc() {
         if (size() >= capacity() - 1) {
-            reserve(RESIZE_COEFFICIENT * size());
-            return;
-        }
-
-        double down_resize_coeff = capacity() / (RESIZE_COEFFICIENT * RESIZE_COEFFICIENT);
-        if (size() < down_resize_coeff) {
-            doRealloc(capacity() / RESIZE_COEFFICIENT);
+            reserve(RESIZE_COEFFICIENT * capacity());
         }
     }
 
     constexpr void doRealloc(size_type new_capacity) {
-        iterator temp = iterator(allocator_.allocate(new_capacity));
+        vector_iterator temp = vector_iterator(allocator_.allocate(new_capacity));
         copy(begin(), end(), temp, new_capacity);
 
         allocator_.deallocate(start_value.getPtr(), capacity());
@@ -298,29 +354,54 @@ public:
     constexpr void clear() noexcept {
         end_value = start_value;
     }
-    // TODO
-    constexpr iterator insert(const_iterator pos, const_reference value) {
+    constexpr vector_iterator insert(const_iterator pos, const_reference value) {
         size_type pos_num = pos - begin();
 
         tryRealloc();
 
-        copy(begin() + pos_num, end(), begin() + pos_num + 1);
+        copyBackwards(end() - 1, begin() + pos_num - 1, end());
         at(pos_num) = value;
 
         ++end_value;
 
         return begin() + pos_num;
     }
+    constexpr vector_iterator insert(const_iterator pos, size_type count, const_reference value) {
+        for (size_type i = 0; i < count; ++i) {
+            insert(pos, value);
+        }
+        return pos + count;
+    }
+    constexpr vector_iterator insert(const_iterator pos, vector_iterator first, vector_iterator last) {
+        --last;--first;
+        size_type pos_num = pos - begin();
+
+        for (; last != first; --last) {
+            insert(begin() + pos_num, *last);
+        }
+        return pos + (last - first);
+    }
+    constexpr vector_iterator insert(const_iterator pos, std::initializer_list<T> init_list) {
+        auto first = init_list.begin() - 1;
+        auto last  = init_list.end() - 1;
+
+        size_type pos_num = pos - begin();
+
+        for (; last != first; --last) {
+            insert(begin() + pos_num, *last);
+        }
+        return pos + init_list.size();
+    }
     template< class... Args >
-    constexpr iterator emplace( const_iterator pos, Args&&... args ) {
+    constexpr vector_iterator emplace( const_iterator pos, Args&&... args ) {
         return insert(pos, T(std::forward<Args...>(args...)));
     }
-    constexpr iterator erase(const_iterator pos) {
+    constexpr vector_iterator erase(const_iterator pos) {
         copy(pos + 1, end(), pos);
         --end_value;
         return pos;
     }
-    constexpr iterator erase(const_iterator first, const_iterator last) {
+    constexpr vector_iterator erase(const_iterator first, const_iterator last) {
         copy(last, end(), first);
         end_value = end_value - (last - first);
         return end_value;
@@ -352,12 +433,37 @@ public:
             end_value = end_capacity;
         }
     }
+    constexpr void swap(vector& another) noexcept {
+        std::swap(allocator_,   another.allocator_);
+        std::swap(start_value,  another.start_value);
+        std::swap(end_value,    another.end_value);
+        std::swap(end_capacity, another.end_capacity);
+    }
+
+    //=============UTILITY=============//
+    constexpr allocator_type get_allocator() const noexcept {
+        return allocator_;
+    }
+    constexpr void assign(size_type count, const_reference value) {
+        resize(count);
+        for (size_type i = 0; i < count; ++i) {
+            at(i) = value;
+        }
+    }
+    constexpr void assign(input_iterator<T> first, input_iterator<T> last) {
+        resize(last - first);
+        copy(first, last, start_value);
+    }
+    constexpr void assign(std::initializer_list<T> init_list) {
+        resize(init_list.size());
+        copy(init_list.begin(), init_list.end(), start_value);
+    }
 
 private:
     Allocator allocator_;
-    iterator  start_value;
-    iterator  end_value;
-    iterator  end_capacity;
+    vector_iterator  start_value;
+    vector_iterator  end_value;
+    vector_iterator  end_capacity;
 };
 
 }

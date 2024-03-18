@@ -4,8 +4,9 @@
 #include "vector.hpp"
 
 int main() {
-    m_vector::vector<int> test(5, 0);
-    for (size_t i = 0; i < 5; i++) test[i] = i;
+    m_vector::vector<int> test = {1, 2, 3, 4, 5};
+    // m_vector::vector<int> test(5, 0);
+    // for (size_t i = 0; i < 5; i++) test[i] = i;
     for (size_t i = 0; i < test.size(); i++) {
         std::cout << test[i] << ' ';
     }
@@ -59,7 +60,29 @@ int main() {
     std::cout << '\n';
 
     std::cout << "RESIZE DOWN\n";
-    test.resize(15);
+    test.resize(5);
+    for (size_t i = 0; i < test.size(); i++) {
+        std::cout << test[i] << ' ';
+    }
+    std::cout << '\n';
+
+    std::cout << "INSERT ONE VAL (11)\n";
+    test.insert(test.begin() + 2, 11);
+    for (size_t i = 0; i < test.size(); i++) {
+        std::cout << test[i] << ' ';
+    }
+    std::cout << '\n';
+
+    std::cout << "INSERT RANGE (15, 16, 17)\n";
+    test.insert(test.begin() + 4, {15, 16, 17});
+    for (size_t i = 0; i < test.size(); i++) {
+        std::cout << test[i] << ' ';
+    }
+    std::cout << '\n';
+
+    std::cout << "INSERT RANGE (100, 101, 102) x2\n";
+    m_vector::vector<int> tmp = {100, 101, 102};
+    test.insert(test.begin() + 6, tmp.begin(), tmp.end());
     for (size_t i = 0; i < test.size(); i++) {
         std::cout << test[i] << ' ';
     }
