@@ -76,6 +76,12 @@ template<
         class Allocator = allocator<T>
         >
 class vector {
+private:
+    static constexpr const char* ITERATOR_ERROR         = "vector_iterator ptr is NULL!";
+    static constexpr const char* OUT_OF_BOUNDS_ERROR    = "Position was greater capacity!";
+    static constexpr const char* CONTAINER_IS_EMPTY_ERR = "Container is empty!";
+    static constexpr const char* OUT_OF_MEMORY          = "new_capacity > max_size()!";
+
 public:
 
     //=============MEMBER TYPES=============//
@@ -95,7 +101,7 @@ private:
             : ptr_(ptr) {
         }
         constexpr reference operator*() const {
-            if (!ptr_) throw std::invalid_argument("vector_iterator ptr is NULL!");
+            if (!ptr_) throw std::invalid_argument(ITERATOR_ERROR);
             return *ptr_;
         }
         constexpr vector_iterator& operator++() {
@@ -248,11 +254,11 @@ public:
         copy(init_list.begin(), init_list.end(), start_value);
     }
     constexpr reference operator[](size_type pos) {
-        if (pos >= capacity()) throw std::out_of_range("Position was greater capacity!"); 
+        if (pos >= capacity()) throw std::out_of_range(OUT_OF_BOUNDS_ERROR); 
         return static_cast<reference>(*(start_value + pos));
     }
     constexpr const_reference operator[](size_type pos) const {
-        if (pos >= capacity()) throw std::out_of_range("Position was greater capacity!"); 
+        if (pos >= capacity()) throw std::out_of_range(OUT_OF_BOUNDS_ERROR); 
         return *(start_value + pos);
     }
 
@@ -284,19 +290,19 @@ public:
         return operator[](pos);
     }
     constexpr reference front() {
-        if (!size()) throw std::out_of_range("Container is empty!");
+        if (!size()) throw std::out_of_range(CONTAINER_IS_EMPTY_ERR);
         return *start_value;
     }
     constexpr const_reference front() const {
-        if (!size()) throw std::out_of_range("Container is empty!");
+        if (!size()) throw std::out_of_range(CONTAINER_IS_EMPTY_ERR);
         return *start_value;
     }
     constexpr reference back() {
-        if (!size()) throw std::out_of_range("Container is empty!");
+        if (!size()) throw std::out_of_range(CONTAINER_IS_EMPTY_ERR);
         return *end_value;
     }
     constexpr const_reference back() const {
-        if (!size()) throw std::out_of_range("Container is empty!");
+        if (!size()) throw std::out_of_range(CONTAINER_IS_EMPTY_ERR);
         return *end_value;
     }
     constexpr pointer data() noexcept {
@@ -317,7 +323,7 @@ public:
         return static_cast<size_type>(allocator_.max_size());
     }
     constexpr void reserve(size_type new_capacity) {
-        if (new_capacity > max_size()) throw std::length_error("new_capacity > max_size()!");
+        if (new_capacity > max_size()) throw std::length_error(OUT_OF_MEMORY);
         if (new_capacity > capacity()) doRealloc(new_capacity);
     }
     constexpr size_type capacity() const noexcept {
