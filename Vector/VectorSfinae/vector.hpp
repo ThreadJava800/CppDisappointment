@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <iostream>
 #include <stdexcept>
+#include <type_traits>
 
 #include "../../Allocator/allocator.hpp"
 #include "../../Iterator/iterator.hpp"
@@ -20,7 +21,7 @@ void fill(InputIterator start, InputIterator end, T& value) {
     }
 }
 
-MAKE_SFINAE(CheckSize, sizeof(T) <= sizeof(long long int))
+MAKE_SFINAE(CheckSize, (sizeof(T) <= sizeof(long long int)) || (std::is_trivially_copy_constructible_v<T>))
 
 template<class InputIterator, class OutputIterator, typename size_type, enable_if_t<false == CheckSize<typename OutputIterator::value_type>::ok, bool> = true>
 void copy(InputIterator start, InputIterator end, OutputIterator output, size_type max_count) {
