@@ -8,6 +8,8 @@
 #include "../Allocator/allocator.hpp"
 #include "../Iterator/iterator.hpp"
 
+
+
 namespace m_vector{
 
 template<typename T, class InputIterator>
@@ -126,6 +128,9 @@ private:
         }
         constexpr bool operator!=(const vector_iterator& other) const {
             return ptr_ != other.ptr_;
+        }
+        constexpr auto operator<=>(const vector_iterator& rhs) const { 
+            return *ptr_ <=> *rhs.ptr_; 
         }
         constexpr const_pointer getPtr() const {
             return ptr_;
@@ -270,7 +275,7 @@ public:
         return start_value;
     }
     constexpr const_iterator cbegin() const noexcept {
-        return start_value;
+        return static_cast<const_iterator>(start_value);
     }
     constexpr vector_iterator end() noexcept {
         return end_value;
@@ -279,7 +284,7 @@ public:
         return end_value;
     }
     constexpr const_iterator cend() const noexcept {
-        return end_value;
+        return static_cast<const_iterator>(end_value);
     }
 
     //=============ELEMENT ACCESS=============//
@@ -399,7 +404,7 @@ public:
         return pos + init_list.size();
     }
     template< class... Args >
-    constexpr vector_iterator emplace( const_iterator pos, Args&&... args ) {
+    constexpr vector_iterator emplace(const_iterator pos, Args&&... args) {
         return insert(pos, T(std::forward<Args...>(args...)));
     }
     constexpr vector_iterator erase(const_iterator pos) {

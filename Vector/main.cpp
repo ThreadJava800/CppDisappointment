@@ -1,18 +1,48 @@
+#include <algorithm>
 #include <iostream>
 // #include <vector>
 
 #include "vector.hpp"
 
 int main() {
-    m_vector::vector<int> test = {1, 2, 3, 4, 5};
+    m_vector::vector<int> test  = {1, 2, 3, 4, 5};
+    m_vector::vector<int> test2 = {1000, 1001, 10002};
+    m_vector::vector<int> test3 = {2000, 2001, 2002, 2003, 2004, 2005, 2006};
     auto print_func = [&]() {
-        for (size_t i = 0; i < test.size(); i++) {
-            std::cout << test[i] << ' ';
+        for (auto val : test) {
+            std::cout << val << ' ';
         }
         std::cout << '\n';
     };
-
     print_func();
+
+    // for_each test
+    std::cout << "range_for print\n";
+    auto one_val_printer = [](const int& val) {
+        std::cout << val << " FOR_EACH ";
+    };
+    std::for_each(test.begin(), test.end(), one_val_printer);
+    std::cout << '\n';
+
+
+    // std::copy test
+    std::cout << "std::copy\n";
+    std::copy(test2.cbegin(), test2.cend(), test.begin());
+    print_func();
+
+    // std::sort test
+    std::cout << "std::sort\n";
+    std::sort(test.begin(), test.end());
+    print_func();
+
+    std::cout << "std::copy_if\n";
+    std::copy_if(test3.begin(), test3.end(), test.begin(), [](const int& val){
+        return val % 2 == 0;
+    });
+    print_func();
+
+
+    // print_func();
     test[2] = 45;
 
     test.insert(test.begin() + 4, 42);

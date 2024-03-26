@@ -11,8 +11,10 @@ int hello(int a, int b) {
 }
 
 int main() {
-    Function<void()> test([]{
-        std::cout << "TEST\n";
+    int a  = 2;
+    a = 10;
+    Function<void()> test([=]{
+        std::cout << "TEST " << a << " \n";
     });
     test();
 
