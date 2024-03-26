@@ -12,11 +12,11 @@ struct BigStruct {
 };
 
 int main() {
-    // fast_vec::vector<BigStruct> a1 = {{1, 2, 3, 4, 5, 6, 7, 8}, {1, 2, 3, 4, 5, 6, 7, 8}, {1, 2, 3, 4, 5, 6, 7, 8}};
-    // fast_vec::vector<BigStruct> a2 = a1;
+    slow_vec::vector<BigStruct> a1 = {{1, 2, 3, 4, 5, 6, 7, 8}, {1, 2, 3, 4, 5, 6, 7, 8}, {1, 2, 3, 4, 5, 6, 7, 8}};
+    slow_vec::vector<BigStruct> a2 = a1;
 
-    fast_vec::vector<int> a1 = {1, 2, 3, 4, 5};
-    fast_vec::vector<int> a2 = a1;
+    // m_vector::vector<int> a1 = {1, 2, 3, 4, 5};
+    // m_vector::vector<int> a2 = a1;
 
     return 0;
 }

@@ -9,10 +9,8 @@
 
 #include "../../Allocator/allocator.hpp"
 #include "../../Iterator/iterator.hpp"
-#include "../../Recursive Templates/sfinae.hpp"
 
-
-namespace slow_vec{
+namespace slow_vec {
 
 template<typename T, class InputIterator>
 void fill(InputIterator start, InputIterator end, T& value) {
@@ -21,14 +19,13 @@ void fill(InputIterator start, InputIterator end, T& value) {
     }
 }
 
-MAKE_SFINAE(CheckSize, (sizeof(T) <= sizeof(long long int)) || (std::is_trivially_copy_constructible_v<T>))
-
-template<class InputIterator, class OutputIterator, typename size_type, enable_if_t<false == CheckSize<typename OutputIterator::value_type>::ok, bool> = true>
-void copy(InputIterator start, InputIterator end, OutputIterator output, size_type max_count) {
+template<class InputIterator, class OutputIterator, typename size_type>
+void copy(InputIterator start, InputIterator end, OutputIterator output, size_type max_count)
+    requires(sizeof(typename OutputIterator::value_type) <= sizeof(long long int) || std::is_trivially_copy_constructible_v<typename OutputIterator::value_type>)  {
     std::cout << "EFFECTIVE\n";
     std::memcpy(&*output, &*start, std::min(end - start, max_count));
 }
-template<class InputIterator, class OutputIterator, typename size_type, enable_if_t<true == CheckSize<typename OutputIterator::value_type>::ok, bool> = true>
+template<class InputIterator, class OutputIterator, typename size_type>
 void copy(InputIterator start, InputIterator end, OutputIterator output, size_type max_count) {
     InputIterator beginning = start;
     std::cout << "NOT EFFECTIVE\n";
@@ -37,12 +34,13 @@ void copy(InputIterator start, InputIterator end, OutputIterator output, size_ty
     }
 }
 
-template<class InputIterator, class OutputIterator, enable_if_t<false == CheckSize<typename OutputIterator::value_type>::ok, bool> = true>
-void copy(InputIterator start, InputIterator end, OutputIterator output) {
+template<class InputIterator, class OutputIterator>
+void copy(InputIterator start, InputIterator end, OutputIterator output)
+    requires(sizeof(typename OutputIterator::value_type) <= sizeof(long long int) || std::is_trivially_copy_constructible_v<typename OutputIterator::value_type>) {
     std::cout << "EFFECTIVE\n";
     std::memcpy(&*output, &*start, end - start);
 }
-template<class InputIterator, class OutputIterator, enable_if_t<true == CheckSize<typename OutputIterator::value_type>::ok, bool> = true>
+template<class InputIterator, class OutputIterator>
 void copy(InputIterator start, InputIterator end, OutputIterator output) {
     std::cout << "NOT EFFECTIVE\n";
     for (; start != end; ++start, ++output) {
@@ -498,7 +496,6 @@ private:
 
 }
 
-
 namespace fast_vec {
 
 template<typename T, class InputIterator>
@@ -508,16 +505,16 @@ void fill(InputIterator start, InputIterator end, T& value) {
     }
 }
 
-MAKE_SFINAE(CheckSize, (sizeof(T) <= sizeof(long long int)) || (std::is_trivially_copy_constructible_v<T>))
-
-template<class InputIterator, class OutputIterator, typename size_type, enable_if_t<false == CheckSize<typename OutputIterator::value_type>::ok, bool> = true>
-void copy(InputIterator start, InputIterator end, OutputIterator output, size_type max_count) {
+template<class InputIterator, class OutputIterator, typename size_type>
+void copy(InputIterator start, InputIterator end, OutputIterator output, size_type max_count)
+    requires(sizeof(typename OutputIterator::value_type) <= sizeof(long long int) || std::is_trivially_copy_constructible_v<typename OutputIterator::value_type>)  {
     std::cout << "EFFECTIVE\n";
     std::memcpy(&*output, &*start, std::min(end - start, max_count));
 }
 
-template<class InputIterator, class OutputIterator, enable_if_t<false == CheckSize<typename OutputIterator::value_type>::ok, bool> = true>
-void copy(InputIterator start, InputIterator end, OutputIterator output) {
+template<class InputIterator, class OutputIterator>
+void copy(InputIterator start, InputIterator end, OutputIterator output)
+    requires(sizeof(typename OutputIterator::value_type) <= sizeof(long long int) || std::is_trivially_copy_constructible_v<typename OutputIterator::value_type>) {
     std::cout << "EFFECTIVE\n";
     std::memcpy(&*output, &*start, end - start);
 }
