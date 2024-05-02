@@ -172,6 +172,12 @@ public:
             delete control_block;
     }
 
+    void swap(SharedPtr& other) noexcept {
+        auto temp           = control_block;
+        control_block       = other.control_block;
+        other.control_block = temp;
+    }
+
     T& operator*() const {
         if (!control_block) throw std::invalid_argument("Control block ptr was NULL!");
         return *(control_block->getValuePtr());

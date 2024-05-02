@@ -19,8 +19,26 @@ public:
          mutex          ()
     {}
 
-    shared_state(shared_state&& other)      = delete;
-    shared_state(const shared_state& other) = delete;
+    shared_state(shared_state&& other) {
+        mutex          = std::move(other.mutex);
+        is_valid       = std::move(other.is_valid);
+        is_transferred = std::move(other.is_transferred);
+        value          = std::move(other.value);
+        waiter         = std::move(other.waiter);
+    }
+
+    shared_state& operator=(shared_state&& other) {
+      if (this != &other) {
+        mutex          = std::move(other.mutex);
+        is_valid       = std::move(other.is_valid);
+        is_transferred = std::move(other.is_transferred);
+        value          = std::move(other.value);
+        waiter         = std::move(other.waiter);
+      }
+
+      return *this;
+    }
+
 
 
 public:

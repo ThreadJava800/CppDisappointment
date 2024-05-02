@@ -11,11 +11,20 @@ enum class future_status {
 
 template<typename T>
 class future {
+
+    template<class R>
+    friend class promise;
+
+private:
+
+    explicit future(SharedPtr<shared_state<T>, ClassicDeleter<shared_state<T>>> _value_state) noexcept 
+      : value_state (_value_state)
+    {}
+
 public:
 
     future() noexcept
       :  value_state (new shared_state<T>) {
-
     }
 
     future(future&& other) noexcept {
@@ -38,6 +47,7 @@ public:
         std::unique_lock lock(value_state->mutex);
 
         if (!(value_state->is_transferred)) {
+            lock.unlock();
             wait();
         }
 
@@ -71,8 +81,8 @@ public:
         std::unique_lock lock(value_state->mutex);
         future_status result_code = future_status::deferred;
 
-        while (!(value_state->is_transferred)) {
-            result_code = value_state->waiter.wait_for(lock, timeout_duration);
+        if (!(value_state->is_transferred)) {
+            result_code = static_cast<future_status>(value_state->waiter.wait_for(lock, timeout_duration));
         }
 
         return result_code;
@@ -83,8 +93,8 @@ public:
         std::unique_lock lock(value_state->mutex);
         future_status result_code = future_status::deferred;
 
-        while (!(value_state->is_transferred)) {
-            result_code = value_state->waiter.wait_until(lock, timeout_time);
+        if (!(value_state->is_transferred)) {
+            result_code = static_cast<future_status>(value_state->waiter.wait_until(lock, timeout_time));
         }
 
         return result_code;
