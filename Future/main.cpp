@@ -18,7 +18,7 @@ int main() {
     using namespace std::literals::chrono_literals;
     auto res = future_res.wait_for(2s);
 
-    std::cout << future_res.get() << '\n';
+    std::cout << static_cast<long>(res) << '\n';
     work_thread.join();
 
     return 0;

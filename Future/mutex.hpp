@@ -5,6 +5,11 @@
 #include <sys/syscall.h>      /* Definition of SYS_* constants */
 #include <unistd.h>
 
+template<typename T>
+long futex_wait(std::atomic<T>* addr, T val, const struct timespec* time = NULL) {
+    return syscall(SYS_futex, addr, FUTEX_WAIT, val, time, 0, 0);
+}
+
 class mutex {
  private:
 
@@ -24,7 +29,7 @@ class mutex {
         occupied_.compare_exchange_strong(cur_state, kLockedFull);
 
         if (cur_state != kUnlocked) {
-          syscall(SYS_futex, (uint32_t*)&occupied_, FUTEX_WAIT, 2, 0, 0, 0);
+          futex_wait(&occupied_, kLockedFull);
         }
 
         cur_state = kUnlocked;

@@ -80,7 +80,7 @@ public:
         future_status result_code = future_status::deferred;
 
         if (!(value_state->is_transferred)) {
-            // result_code = static_cast<future_status>(value_state->waiter.wait_for(lock, timeout_duration));
+            result_code = static_cast<future_status>(value_state->waiter.wait_for(lock, timeout_duration));
         }
 
         return result_code;
@@ -92,7 +92,7 @@ public:
         future_status result_code = future_status::deferred;
 
         if (!(value_state->is_transferred)) {
-            // result_code = static_cast<future_status>(value_state->waiter.wait_until(lock, timeout_time));
+            result_code = static_cast<future_status>(value_state->waiter.wait_until(lock, timeout_time));
         }
 
         return result_code;
