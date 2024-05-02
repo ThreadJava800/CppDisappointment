@@ -1,10 +1,10 @@
 #pragma once
 
-#include <condition_variable>
 #include <expected>
-#include <mutex>
 #include <stdexcept>
-#include <optional>
+
+#include "condvar.hpp"
+#include "mutex.hpp"
 
 // TODO:
 template<typename T>
@@ -16,11 +16,11 @@ public:
          is_valid       (true),
          is_transferred (false),
          waiter         (),
-         mutex          ()
+         condvar_mutex  ()
     {}
 
     shared_state(shared_state&& other) {
-        mutex          = std::move(other.mutex);
+        condvar_mutex  = std::move(other.condvar_mutex);
         is_valid       = std::move(other.is_valid);
         is_transferred = std::move(other.is_transferred);
         value          = std::move(other.value);
@@ -29,7 +29,7 @@ public:
 
     shared_state& operator=(shared_state&& other) {
       if (this != &other) {
-        mutex          = std::move(other.mutex);
+        condvar_mutex  = std::move(other.condvar_mutex);
         is_valid       = std::move(other.is_valid);
         is_transferred = std::move(other.is_transferred);
         value          = std::move(other.value);
@@ -42,10 +42,10 @@ public:
 
 
 public:
-    std::optional<std::expected<T, std::exception_ptr>> value;
-    bool                                                is_valid;
-    bool                                                is_transferred;
+    std::expected<T, std::exception_ptr> value;
+    bool                                 is_valid;
+    bool                                 is_transferred;
 
-    std::condition_variable waiter;
-    std::mutex              mutex;
+    condition_variable waiter;
+    mutex              condvar_mutex;
 };

@@ -36,21 +36,17 @@ public:
     }
 
     void set_value(const R& value) {
-        std::unique_lock lock(value_state->mutex);
+        unique_lock lock(value_state->condvar_mutex);
 
-        value_state->value          = std::optional<std::expected<R, std::exception_ptr>>(std::move(value));
+        value_state->value          = std::expected<R, std::exception_ptr>(std::move(value));
         value_state->is_transferred = true;
         value_state->waiter.notify_all();
     }
 
-    // void set_value(R&& value) {
-    //     set_value(std::move(value));
-    // }
-
     void set_exception(std::exception_ptr error) {
-        std::unique_lock lock(value_state->mutex);
+        unique_lock lock(value_state->condvar_mutex);
 
-        value_state->value          = std::optional<std::expected<R, std::exception_ptr>>(std::unexpected(error));
+        value_state->value          = std::expected<R, std::exception_ptr>(std::unexpected(error));
         value_state->is_transferred = true;
         value_state->waiter.notify_all();
     }

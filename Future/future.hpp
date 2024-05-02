@@ -44,7 +44,7 @@ public:
 
     // if valid() == false then behaviour is undefined
     T get() {
-        std::unique_lock lock(value_state->mutex);
+        unique_lock lock(value_state->condvar_mutex);
 
         if (!(value_state->is_transferred)) {
             lock.unlock();
@@ -53,13 +53,11 @@ public:
 
         value_state->is_valid = false;
         
-        auto value = std::move(value_state->value.value());
-
-        if (!value.has_value()) {
-            std::rethrow_exception(value.error());
+        if (!value_state->value.has_value()) {
+            std::rethrow_exception(value_state->value.error());
         }
 
-        return std::move(value.value());
+        return std::move(value_state->value.value());
     }
 
     bool valid() const noexcept {
@@ -69,7 +67,7 @@ public:
     void wait() const {
         if (!valid()) return;
 
-        std::unique_lock lock(value_state->mutex);
+        unique_lock lock(value_state->condvar_mutex);
 
         while (!(value_state->is_transferred)) {
             value_state->waiter.wait(lock);
@@ -78,11 +76,11 @@ public:
 
     template<class Rep, class Period>
     future_status wait_for(const std::chrono::duration<Rep,Period>& timeout_duration) const {
-        std::unique_lock lock(value_state->mutex);
+        unique_lock lock(value_state->condvar_mutex);
         future_status result_code = future_status::deferred;
 
         if (!(value_state->is_transferred)) {
-            result_code = static_cast<future_status>(value_state->waiter.wait_for(lock, timeout_duration));
+            // result_code = static_cast<future_status>(value_state->waiter.wait_for(lock, timeout_duration));
         }
 
         return result_code;
@@ -90,11 +88,11 @@ public:
 
     template<class Clock, class Duration>
     future_status wait_until(const std::chrono::time_point<Clock,Duration>& timeout_time) const {
-        std::unique_lock lock(value_state->mutex);
+        unique_lock lock(value_state->condvar_mutex);
         future_status result_code = future_status::deferred;
 
         if (!(value_state->is_transferred)) {
-            result_code = static_cast<future_status>(value_state->waiter.wait_until(lock, timeout_time));
+            // result_code = static_cast<future_status>(value_state->waiter.wait_until(lock, timeout_time));
         }
 
         return result_code;
