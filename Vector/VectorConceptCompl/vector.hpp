@@ -509,14 +509,14 @@ template<class InputIterator, class OutputIterator, typename size_type>
 void copy(InputIterator start, InputIterator end, OutputIterator output, size_type max_count)
     requires(sizeof(typename OutputIterator::value_type) <= sizeof(long long int) || std::is_trivially_copy_constructible_v<typename OutputIterator::value_type>)  {
     std::cout << "EFFECTIVE\n";
-    std::memcpy(&*output, &*start, std::min(end - start, max_count));
+    std::memcpy(&*output, &*start, std::min(end - start, max_count) * sizeof(typename OutputIterator::value_type));
 }
 
 template<class InputIterator, class OutputIterator>
 void copy(InputIterator start, InputIterator end, OutputIterator output)
     requires(sizeof(typename OutputIterator::value_type) <= sizeof(long long int) || std::is_trivially_copy_constructible_v<typename OutputIterator::value_type>) {
     std::cout << "EFFECTIVE\n";
-    std::memcpy(&*output, &*start, end - start);
+    std::memcpy(&*output, &*start, (end - start) * sizeof(typename OutputIterator::value_type));
 }
 
 template<class InputIterator, class OutputIterator>

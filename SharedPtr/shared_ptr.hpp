@@ -70,9 +70,16 @@ struct DefaultDeleter {
     }
 };
 
+template<typename T>
+struct ClassicDeleter {
+    void operator()(T* value) {
+        delete value;
+    }
+};
+
 template<typename T, class Deleter = DefaultDeleter<T>>
 struct DefaultAllocator {
-    ControlBlock<T, Deleter>* operator()(T* value, Deleter deleter = DefaultDeleter<T>()) {
+    ControlBlock<T, Deleter>* operator()(T* value, Deleter deleter = Deleter()) {
         return new ControlBlock<T, Deleter>(value, deleter);
     }
 };

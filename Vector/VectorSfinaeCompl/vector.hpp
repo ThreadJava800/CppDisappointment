@@ -513,13 +513,13 @@ MAKE_SFINAE(CheckSize, (sizeof(T) <= sizeof(long long int)) || (std::is_triviall
 template<class InputIterator, class OutputIterator, typename size_type, enable_if_t<false == CheckSize<typename OutputIterator::value_type>::ok, bool> = true>
 void copy(InputIterator start, InputIterator end, OutputIterator output, size_type max_count) {
     std::cout << "EFFECTIVE\n";
-    std::memcpy(&*output, &*start, std::min(end - start, max_count));
+    std::memcpy(&*output, &*start, std::min(end - start, max_count) * sizeof(typename OutputIterator::value_type));
 }
 
 template<class InputIterator, class OutputIterator, enable_if_t<false == CheckSize<typename OutputIterator::value_type>::ok, bool> = true>
 void copy(InputIterator start, InputIterator end, OutputIterator output) {
     std::cout << "EFFECTIVE\n";
-    std::memcpy(&*output, &*start, end - start);
+    std::memcpy(&*output, &*start, (end - start) * sizeof(typename OutputIterator::value_type));
 }
 
 template<class InputIterator, class OutputIterator>
