@@ -1,19 +1,25 @@
 #pragma once
 
-// template<class T, class E>
-// union expected_union {
-//     T value;
-//     E error;
+template<class E>
+class unexpected {
+public:
 
-//      expected_union() {}
-//     ~expected_union() {}
+    constexpr unexpected(const unexpected&) = default;
+    constexpr unexpected(unexpected&&)      = default;
 
-//     expected_union& operator=(const expected_union& other) {
-        
-        
-//         return *this;
-//     }
-// };
+    constexpr explicit unexpected(E&& _error) 
+      :  error_ (std::move(_error))
+    {}
+    
+    ~unexpected() = default;
+
+    constexpr const E& error() const& noexcept {
+        return error_;
+    }
+
+private:
+    E error_;
+};
 
 enum class expected_type {
     VALUE,
@@ -25,15 +31,20 @@ class expected {
 public:
     explicit expected() {}
 
-    explicit expected(T _value) {
-        type_ = expected_type::VALUE;
-        value_ = _value;
-    }
+    explicit expected(T&& _value) 
+      :  value_ (std::move(_value)),
+         type_  (expected_type::VALUE)
+    {}
 
-    explicit expected(E _error) {
-        type_ = expected_type::ERROR;
-        error_ = _error;
-    }
+    explicit expected(unexpected<E> const& _error) 
+      :  error_ (std::move(_error.error())),
+         type_  (expected_type::ERROR)
+    {}
+
+    explicit expected(unexpected<E>&& _error) 
+      :  error_ (std::move(_error.error())),
+         type_  (expected_type::ERROR)
+    {}
 
     bool has_value() const noexcept {
         return type_ == expected_type::VALUE;
@@ -49,6 +60,9 @@ public:
 
 private:
     expected_type type_;
-    T value_;
-    E error_;
+
+    union {
+      T value_;
+      E error_;
+    };
 };

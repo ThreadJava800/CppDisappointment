@@ -1,6 +1,7 @@
 #pragma once
 
 #include "future.hpp"
+#include "expected.hpp"
 #include "../SharedPtr/shared_ptr.hpp"
 
 template<class R>
@@ -46,7 +47,7 @@ public:
     void set_exception(std::exception_ptr error) {
         unique_lock lock(value_state->condvar_mutex);
 
-        value_state->value          = std::expected<R, std::exception_ptr>(std::unexpected(error));
+        value_state->value          = expected<R, std::exception_ptr>(unexpected(error));
         value_state->is_transferred = true;
         value_state->waiter.notify_all();
     }
